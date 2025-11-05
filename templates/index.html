@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AI Learning Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            "primary-blue": "#1e40af",
+            "secondary-gray": "#f3f4f6"
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-500">
+  <div class="max-w-5xl mx-auto p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg dark:shadow-none transition-colors duration-500">
+
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-extrabold text-primary-blue dark:text-indigo-300">
+            🧠 AI Learning Generator
+          </h1>
+          <p class="text-gray-600 dark:text-slate-400">
+            Generate flashcards or MCQs and quiz yourself.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="{{ url_for('history') }}" class="px-3 py-2 bg-gray-200 dark:bg-slate-700 rounded hover:bg-gray-300 dark:hover:bg-slate-600 transition">History</a>
+          <a href="{{ url_for('logout') }}" class="px-3 py-2 bg-gray-200 dark:bg-slate-700 rounded hover:bg-gray-300 dark:hover:bg-slate-600 transition">Logout</a>
+
+          <!-- 🌗 Theme Toggle -->
+          <button id="theme-toggle"
+                  class="ml-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-2 rounded-lg shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+            🌙
+          </button>
+        </div>
+      </header>
+
+      <!-- Controls -->
+      <div class="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+        <div class="md:col-span-3">
+          <label class="text-slate-600 dark:text-slate-300 mb-1 block">Topic</label>
+          <input id="topic-input" class="w-full p-3 rounded bg-gray-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600" placeholder="e.g., React Hooks">
+        </div>
+
+        <div>
+          <label class="text-slate-600 dark:text-slate-300 mb-1 block">Count (1-20)</label>
+          <input id="num-cards-input" type="number" min="1" max="20" value="5" class="w-full p-3 rounded bg-gray-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-center">
+        </div>
+
+        <div>
+          <label class="text-slate-600 dark:text-slate-300 mb-1 block">Difficulty</label>
+          <select id="difficulty" class="w-full p-3 rounded bg-gray-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+            <option>Beginner</option>
+            <option selected>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-slate-600 dark:text-slate-300 mb-1 block">Mode</label>
+          <div id="mode-selector" class="flex gap-2">
+            <button data-mode="flashcard" class="mode-tab px-3 py-2 bg-indigo-600 rounded text-white shadow hover:bg-indigo-700 transition">Flashcards</button>
+            <button data-mode="mcq" class="mode-tab px-3 py-2 bg-gray-200 dark:bg-slate-700 rounded text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-600 transition">MCQ</button>
+          </div>
+        </div>
+
+        <div class="md:col-span-1">
+          <label class="invisible">Generate</label>
+          <button id="generate-button" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 rounded font-semibold text-white transition">Generate</button>
+        </div>
+      </div>
+
+      <div id="message-area"></div>
+
+      <!-- Content Area -->
+      <div id="content-area">
+        <div id="flashcard-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        <div id="quiz-container" class="hidden space-y-6"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <!-- 🌙 Dark/Light Toggle Script -->
+  <script>
+    const htmlEl = document.documentElement;
+    const toggleBtn = document.getElementById("theme-toggle");
+
+    // Load theme preference
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      htmlEl.classList.add("dark");
+      toggleBtn.textContent = "☀️";
+    } else {
+      htmlEl.classList.remove("dark");
+      toggleBtn.textContent = "🌙";
+    }
+
+    // Toggle handler
+    toggleBtn.addEventListener("click", () => {
+      htmlEl.classList.toggle("dark");
+      const isDark = htmlEl.classList.contains("dark");
+      localStorage.theme = isDark ? "dark" : "light";
+      toggleBtn.textContent = isDark ? "☀️" : "🌙";
+    });
+  </script>
+</body>
+</html>
