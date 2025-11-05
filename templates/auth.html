@@ -1,0 +1,316 @@
+<!-- <!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ 'Login' if is_login else 'Register' }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center">
+  <div class="bg-slate-800 p-8 rounded-2xl w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">{{ 'Login' if is_login else 'Register' }}</h2>
+    {% if error %}
+      <div class="mb-4 p-3 bg-rose-600 text-white rounded">{{ error }}</div>
+    {% endif %}
+    <form method="POST" class="space-y-4">
+      <input name="email" type="email" required placeholder="Email" class="w-full p-3 rounded bg-slate-700 border border-slate-600">
+      <input name="password" type="password" required placeholder="Password" class="w-full p-3 rounded bg-slate-700 border border-slate-600">
+      <button type="submit" class="w-full py-3 bg-indigo-600 rounded font-semibold">{{ 'Login' if is_login else 'Register' }}</button>
+    </form>
+    <p class="text-sm text-slate-400 mt-4 text-center">
+      {% if is_login %}
+        Don't have an account? <a href="{{ url_for('register') }}" class="text-indigo-400">Register</a>
+      {% else %}
+        Already have an account? <a href="{{ url_for('login') }}" class="text-indigo-400">Login</a>
+      {% endif %}
+    </p>
+  </div>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ 'Login' if is_login else 'Register' }} - AI Learning Generator</title>
+
+  <style>
+    /* ---------- GLOBAL ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.4s ease-in-out;
+    }
+
+    /* ---------- CONTAINER ---------- */
+    .container {
+      position: relative;
+      width: 380px;
+      padding: 40px 30px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 255, 200, 0.15);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* ---------- FORMS ---------- */
+    form {
+      display: none;
+      transition: opacity 0.3s ease;
+      animation: fade 0.3s ease;
+    }
+
+    form.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #8b5cf6;
+      font-size: 1.7rem;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00c9a7, #3b82f6);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .link {
+      margin-top: 15px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .link a {
+      color: #00c9a7;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- ERROR BOX ---------- */
+    .error-box {
+      background: #ef4444;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- TOGGLE BUTTON ---------- */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ---------- LIGHT MODE ---------- */
+    body.light-mode {
+      background: linear-gradient(135deg, #e2e8f0, #c7d2fe);
+    }
+
+    body.light-mode .container {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode h2 {
+      color: #4f46e5;
+    }
+
+    body.light-mode p {
+      color: #333;
+    }
+
+    body.light-mode input {
+      background: rgba(0, 0, 0, 0.05);
+      color: #111;
+    }
+
+    body.light-mode input:focus {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .link {
+      color: #555;
+    }
+
+    body.light-mode .link a {
+      color: #3b82f6;
+    }
+
+    body.light-mode .theme-toggle {
+      background: rgba(0, 0, 0, 0.1);
+      color: #222;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        font-size: 0.85rem;
+      }
+
+      input, .btn {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 🌞 / 🌙 Theme Toggle -->
+  <button class="theme-toggle">🌙</button>
+
+  <div class="container">
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <!-- LOGIN FORM -->
+    <form id="login-form" class="{{ 'active' if is_login else '' }}" method="POST" action="{{ url_for('login') }}">
+      <h2>Welcome Back 👋</h2>
+      <p>Sign in to continue your learning journey</p>
+
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+
+      <button type="submit" class="btn">Login</button>
+
+      <div class="link">
+        Don’t have an account?
+        <a href="{{ url_for('register') }}">Sign Up</a>
+      </div>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form id="signup-form" class="{{ '' if is_login else 'active' }}" method="POST" action="{{ url_for('register') }}">
+      <h2>Create Account 🚀</h2>
+      <p>Join AI Learning Generator today</p>
+
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <input name="confirm" type="password" placeholder="Confirm Password" required>
+
+      <button type="submit" class="btn">Sign Up</button>
+
+      <div class="link">
+        Already have an account?
+        <a href="{{ url_for('login') }}">Login</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ---------- SCRIPT ---------- -->
+  <script>
+    const toggleBtn = document.querySelector('.theme-toggle');
+    const body = document.body;
+
+    // Theme Load
+    if (localStorage.getItem('theme') === 'light') {
+      body.classList.add('light-mode');
+      toggleBtn.textContent = '🌞';
+    }
+
+    // Theme Toggle
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('light-mode');
+      const isLight = body.classList.contains('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      toggleBtn.textContent = isLight ? '🌞' : '🌙';
+    });
+  </script>
+</body>
+</html>
